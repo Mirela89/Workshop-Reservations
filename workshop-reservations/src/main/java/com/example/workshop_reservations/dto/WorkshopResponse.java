@@ -17,4 +17,7 @@ public class WorkshopResponse {
     private String description;
     private LocalDateTime date;
     private Integer capacity;
+
+    private Integer reservedSeats;
+    private Integer availableSeats;
 }

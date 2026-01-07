@@ -1,7 +1,6 @@
 package com.example.workshop_reservations.mapper;
 
-import com.example.workshop_reservations.dto.CreateWorkshopRequest;
-import com.example.workshop_reservations.dto.UpdateWorkshopRequest;
+import com.example.workshop_reservations.dto.WorkshopRequest;
 import com.example.workshop_reservations.dto.WorkshopResponse;
 import com.example.workshop_reservations.model.Workshop;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class WorkshopMapper {
 
     // Converts Create DTO to Entity. Useful for POST /workshops.
-    public Workshop toEntity(CreateWorkshopRequest dto) {
+    public Workshop toEntity(WorkshopRequest dto) {
         return Workshop.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
@@ -20,7 +19,7 @@ public class WorkshopMapper {
     }
 
     // Updates an existing entity with data from Update DTO. Useful for PUT /workshops/{id}.
-    public void updateEntity(Workshop workshop, UpdateWorkshopRequest dto) {
+    public void updateEntity(Workshop workshop, WorkshopRequest dto) {
         workshop.setTitle(dto.getTitle());
         workshop.setDescription(dto.getDescription());
         workshop.setDate(dto.getDate());
