@@ -20,4 +20,13 @@ public class WorkshopResponse {
 
     private Integer reservedSeats;
     private Integer availableSeats;
+
+    private Long categoryId;
+    private String categoryName;
+
+    private Long locationId;
+    private String locationName;
+
+    private Long organizerId;
+    private String organizerName;
 }

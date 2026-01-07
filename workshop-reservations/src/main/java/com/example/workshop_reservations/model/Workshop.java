@@ -34,4 +34,19 @@ public class Workshop {
     // Capacitatea maxima a workshop-ului
     @Column(nullable = false)
     private Integer capacity;
+
+    // Relatii Many-to-One cu Category
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    // Relatii Many-to-One cu Location
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
+
+    // Relatii Many-to-One cu Organizer
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    private Organizer organizer;
 }

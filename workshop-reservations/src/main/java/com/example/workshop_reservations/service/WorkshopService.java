@@ -4,10 +4,8 @@ import com.example.workshop_reservations.dto.WorkshopRequest;
 import com.example.workshop_reservations.dto.WorkshopResponse;
 import com.example.workshop_reservations.exception.ResourceNotFoundException;
 import com.example.workshop_reservations.mapper.WorkshopMapper;
-import com.example.workshop_reservations.model.ReservationStatus;
-import com.example.workshop_reservations.model.Workshop;
-import com.example.workshop_reservations.repository.ReservationRepository;
-import com.example.workshop_reservations.repository.WorkshopRepository;
+import com.example.workshop_reservations.model.*;
+import com.example.workshop_reservations.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +19,32 @@ public class WorkshopService {
     private final WorkshopMapper workshopMapper;
 
     private final ReservationRepository reservationRepository;
+    private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
+    private final OrganizerRepository organizerRepository;
 
     // Create a new workshop
     public WorkshopResponse create(WorkshopRequest request) {
+
+        // Validate related entities
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + request.getCategoryId() + " not found"));
+
+        Location location = locationRepository.findById(request.getLocationId())
+                .orElseThrow(() -> new ResourceNotFoundException("Location with id " + request.getLocationId() + " not found"));
+
+        Organizer organizer = organizerRepository.findById(request.getOrganizerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Organizer with id " + request.getOrganizerId() + " not found"));
+
+        // Create entity from request
         Workshop workshop = workshopMapper.toEntity(request);
+
+        // Set related entities
+        workshop.setCategory(category);
+        workshop.setLocation(location);
+        workshop.setOrganizer(organizer);
+
+        // Save to repository
         Workshop saved = workshopRepository.save(workshop);
         return workshopMapper.toResponse(saved);
     }
@@ -67,6 +87,25 @@ public class WorkshopService {
 
         workshopMapper.updateEntity(workshop, request);
 
+        // Validate related entities
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category with id " + request.getCategoryId() + " not found"));
+
+        Location location = locationRepository.findById(request.getLocationId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Location with id " + request.getLocationId() + " not found"));
+
+        Organizer organizer = organizerRepository.findById(request.getOrganizerId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Organizer with id " + request.getOrganizerId() + " not found"));
+
+        // Set related entities
+        workshop.setCategory(category);
+        workshop.setLocation(location);
+        workshop.setOrganizer(organizer);
+
+        // Save updated entity
         Workshop saved = workshopRepository.save(workshop);
         return workshopMapper.toResponse(saved);
     }

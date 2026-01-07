@@ -31,4 +31,16 @@ public class WorkshopRequest {
     @Min(1)
     @Max(500)
     private Integer capacity;
+
+    // ID-ul categoriei din care face parte workshop-ul
+    @NotNull(message = "categoryId is required")
+    private Long categoryId;
+
+    // ID-ul locatiei unde se desfasoara workshop-ul
+    @NotNull(message = "locationId is required")
+    private Long locationId;
+
+    // ID-ul organizatorului workshop-ului
+    @NotNull(message = "organizerId is required")
+    private Long organizerId;
 }
