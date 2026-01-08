@@ -13,14 +13,8 @@ public class ReservationRequest {
     @NotNull
     private Long workshopId;
 
-    @NotBlank
-    @Size(max = 100)
-    private String fullName;
-
-    @NotBlank
-    @Email
-    @Size(max = 120)
-    private String email;
+    @NotNull
+    private Long userId;
 
     @NotNull
     @Min(1)

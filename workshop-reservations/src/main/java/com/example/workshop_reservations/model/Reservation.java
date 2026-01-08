@@ -18,14 +18,6 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Numele participantului
-    @Column(nullable = false, length = 100)
-    private String fullName;
-
-    // Email-ul participantului
-    @Column(nullable = false, length = 120)
-    private String email;
-
     // Numarul de locuri rezervate la workshop
     @Column(nullable = false)
     private Integer seats;
@@ -38,6 +30,11 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ReservationStatus status;
+
+    // Relatia Many-to-One cu User ( Many reservations to One User )
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     // Relatia Many-to-One cu Workshop ( Many reservations to One Workshop )
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

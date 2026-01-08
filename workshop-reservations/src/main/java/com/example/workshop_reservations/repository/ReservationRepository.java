@@ -23,8 +23,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
            """)
     int sumSeatsByWorkshopAndStatus(Long workshopId, ReservationStatus status);
 
-    // Check if a reservation exists for a workshop by email and status
-    boolean existsByWorkshopIdAndEmailAndStatus(Long workshopId, String email, ReservationStatus status);
+    // Check if a reservation exists for a workshop by user ID and status
+    boolean existsByWorkshopIdAndUserIdAndStatus(Long workshopId, Long userId, ReservationStatus status);
+
+    // Check if any reservation exists for a user
+    boolean existsByUserId(Long userId);
 
     // Cancel all reservations for a specific workshop
     @Modifying

@@ -20,6 +20,10 @@ public class ReservationResponse {
     private String email;
     private Integer seats;
 
+    private Long userId;
+    private String userName;
+    private String userEmail;
+
     private ReservationStatus status;
     private LocalDateTime createdAt;
 }

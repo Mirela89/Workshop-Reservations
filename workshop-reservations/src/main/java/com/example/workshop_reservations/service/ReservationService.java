@@ -5,11 +5,9 @@ import com.example.workshop_reservations.dto.ReservationRequest;
 import com.example.workshop_reservations.dto.ReservationResponse;
 import com.example.workshop_reservations.exception.ResourceNotFoundException;
 import com.example.workshop_reservations.mapper.ReservationMapper;
-import com.example.workshop_reservations.model.Reservation;
-import com.example.workshop_reservations.model.ReservationStatus;
-import com.example.workshop_reservations.model.Workshop;
-import com.example.workshop_reservations.model.WorkshopStatus;
+import com.example.workshop_reservations.model.*;
 import com.example.workshop_reservations.repository.ReservationRepository;
+import com.example.workshop_reservations.repository.UserRepository;
 import com.example.workshop_reservations.repository.WorkshopRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final WorkshopRepository workshopRepository;
     private final ReservationMapper reservationMapper;
+    private final UserRepository userRepository;
 
     // Create a new reservation
     @Transactional
@@ -43,9 +42,14 @@ public class ReservationService {
             throw new IllegalArgumentException("Cannot create reservation for a workshop in the past.");
         }
 
+        // Load user (user must exist)
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User with id " + request.getUserId() + " not found"));
+
         // Allow only one ACTIVE reservation per email for the same workshop
-        if (reservationRepository.existsByWorkshopIdAndEmailAndStatus(
-                workshop.getId(), request.getEmail(), ReservationStatus.CREATED)) {
+        if (reservationRepository.existsByWorkshopIdAndUserIdAndStatus(
+                workshop.getId(), user.getId(), ReservationStatus.CREATED)) {
             throw new IllegalArgumentException("You already have an active reservation for this workshop.");
         }
 
@@ -56,7 +60,7 @@ public class ReservationService {
             throw new IllegalArgumentException("Not enough available seats. Available: " + availableSeats);
         }
 
-        Reservation reservation = reservationMapper.toEntity(request, workshop);
+        Reservation reservation = reservationMapper.toEntity(request, workshop, user);
 
         Reservation saved = reservationRepository.save(reservation);
         return reservationMapper.toResponse(saved);
