@@ -1,5 +1,6 @@
 package com.example.workshop_reservations.dto;
 
+import com.example.workshop_reservations.model.WorkshopStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class WorkshopResponse {
     private String description;
     private LocalDateTime date;
     private Integer capacity;
+    private WorkshopStatus status;
 
     private Integer reservedSeats;
     private Integer availableSeats;

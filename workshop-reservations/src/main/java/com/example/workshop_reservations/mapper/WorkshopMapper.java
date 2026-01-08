@@ -34,6 +34,7 @@ public class WorkshopMapper {
                 .description(workshop.getDescription())
                 .date(workshop.getDate())
                 .capacity(workshop.getCapacity())
+                .status(workshop.getStatus())
                 .categoryId(workshop.getCategory().getId())
                 .categoryName(workshop.getCategory().getName())
                 .locationId(workshop.getLocation().getId())

@@ -6,6 +6,7 @@ import com.example.workshop_reservations.exception.ResourceNotFoundException;
 import com.example.workshop_reservations.mapper.WorkshopMapper;
 import com.example.workshop_reservations.model.*;
 import com.example.workshop_reservations.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +109,23 @@ public class WorkshopService {
         // Save updated entity
         Workshop saved = workshopRepository.save(workshop);
         return workshopMapper.toResponse(saved);
+    }
+
+    @Transactional
+    public void cancelWorkshop(Long id) {
+        Workshop workshop = workshopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Workshop with id " + id + " not found"));
+
+        // If already canceled, do nothing
+        if (workshop.getStatus() == WorkshopStatus.CANCELED) {
+            return;
+        }
+
+        workshop.setStatus(WorkshopStatus.CANCELED);
+        workshopRepository.save(workshop);
+
+        // Cancel all associated reservations
+        reservationRepository.cancelByWorkshopId(id);
     }
 
     // Delete a workshop by ID

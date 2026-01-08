@@ -3,7 +3,9 @@ package com.example.workshop_reservations.repository;
 import com.example.workshop_reservations.model.Reservation;
 import com.example.workshop_reservations.model.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,4 +25,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     // Check if a reservation exists for a workshop by email and status
     boolean existsByWorkshopIdAndEmailAndStatus(Long workshopId, String email, ReservationStatus status);
+
+    // Cancel all reservations for a specific workshop
+    @Modifying
+    @Query("update Reservation r set r.status = com.example.workshop_reservations.model.ReservationStatus.CANCELED " +
+            "where r.workshop.id = :workshopId and r.status <> com.example.workshop_reservations.model.ReservationStatus.CANCELED")
+    void cancelByWorkshopId(@Param("workshopId") Long workshopId);
 }

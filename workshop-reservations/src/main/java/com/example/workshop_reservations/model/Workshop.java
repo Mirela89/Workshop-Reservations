@@ -35,6 +35,11 @@ public class Workshop {
     @Column(nullable = false)
     private Integer capacity;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private WorkshopStatus status = WorkshopStatus.ACTIVE;
+
     // Relatii Many-to-One cu Category
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)

@@ -8,6 +8,7 @@ import com.example.workshop_reservations.mapper.ReservationMapper;
 import com.example.workshop_reservations.model.Reservation;
 import com.example.workshop_reservations.model.ReservationStatus;
 import com.example.workshop_reservations.model.Workshop;
+import com.example.workshop_reservations.model.WorkshopStatus;
 import com.example.workshop_reservations.repository.ReservationRepository;
 import com.example.workshop_reservations.repository.WorkshopRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +33,11 @@ public class ReservationService {
         Workshop workshop = workshopRepository.findByIdForUpdate(request.getWorkshopId())
                 .orElseThrow(() -> new ResourceNotFoundException("Workshop with id " + request.getWorkshopId() + " not found"));
 
+        // Do not allow reservations for canceled workshops
+        if (workshop.getStatus() == WorkshopStatus.CANCELED) {
+            throw new IllegalArgumentException("Cannot create reservation. Workshop is canceled.");
+        }
+
         // Do not allow reservations for workshops in the past
         if (workshop.getDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Cannot create reservation for a workshop in the past.");
@@ -50,14 +56,7 @@ public class ReservationService {
             throw new IllegalArgumentException("Not enough available seats. Available: " + availableSeats);
         }
 
-        Reservation reservation = Reservation.builder()
-                .workshop(workshop)
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .seats(request.getSeats())
-                .createdAt(LocalDateTime.now())
-                .status(ReservationStatus.CREATED)
-                .build();
+        Reservation reservation = reservationMapper.toEntity(request, workshop);
 
         Reservation saved = reservationRepository.save(reservation);
         return reservationMapper.toResponse(saved);

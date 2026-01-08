@@ -84,6 +84,22 @@ public class WorkshopController {
         return workshopService.update(id, request);
     }
 
+    // Cancel a workshop by ID
+    // POST /workshops/{id}/cancel
+    @Operation(
+            summary = "Cancel workshop",
+            description = "Cancels a workshop by id. All existing reservations will also be cancelled."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Workshop cancelled successfully"),
+            @ApiResponse(responseCode = "404", description = "Workshop not found")
+    })
+    @PostMapping("/{id}/cancel")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancel(@PathVariable Long id) {
+        workshopService.cancelWorkshop(id);
+    }
+
     // Delete a workshop by ID
     // DELETE /workshops/{id}
     @Operation(
