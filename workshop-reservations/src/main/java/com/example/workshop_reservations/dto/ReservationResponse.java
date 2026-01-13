@@ -4,6 +4,7 @@ import com.example.workshop_reservations.model.ReservationStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,13 +17,13 @@ public class ReservationResponse {
     private Long workshopId;
     private String workshopTitle;
 
-    private String fullName;
-    private String email;
     private Integer seats;
 
     private Long userId;
     private String userName;
     private String userEmail;
+
+    private List<ParticipantResponse> participants;
 
     private ReservationStatus status;
     private LocalDateTime createdAt;

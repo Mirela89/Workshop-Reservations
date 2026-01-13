@@ -4,6 +4,7 @@ package com.example.workshop_reservations.service;
 import com.example.workshop_reservations.dto.ReservationRequest;
 import com.example.workshop_reservations.dto.ReservationResponse;
 import com.example.workshop_reservations.exception.ResourceNotFoundException;
+import com.example.workshop_reservations.mapper.ParticipantMapper;
 import com.example.workshop_reservations.mapper.ReservationMapper;
 import com.example.workshop_reservations.model.*;
 import com.example.workshop_reservations.repository.ReservationRepository;
@@ -24,6 +25,7 @@ public class ReservationService {
     private final WorkshopRepository workshopRepository;
     private final ReservationMapper reservationMapper;
     private final UserRepository userRepository;
+    private final ParticipantMapper participantMapper;
 
     // Create a new reservation
     @Transactional
@@ -56,11 +58,22 @@ public class ReservationService {
         int reservedSeats = reservationRepository.sumSeatsByWorkshopAndStatus(workshop.getId(), ReservationStatus.CREATED);
         int availableSeats = workshop.getCapacity() - reservedSeats;
 
+        // Validate seat availability
         if (request.getSeats() > availableSeats) {
             throw new IllegalArgumentException("Not enough available seats. Available: " + availableSeats);
         }
 
+        // Validate participants count
+        if (request.getParticipants() == null || request.getParticipants().size() != request.getSeats()) {
+            throw new IllegalArgumentException("Participants list must contain exactly " + request.getSeats() + " items.");
+        }
+
         Reservation reservation = reservationMapper.toEntity(request, workshop, user);
+
+        // Map participants and set them to reservation
+        reservation.setParticipants(
+                participantMapper.toEntity(request.getParticipants(), reservation)
+        );
 
         Reservation saved = reservationRepository.save(reservation);
         return reservationMapper.toResponse(saved);

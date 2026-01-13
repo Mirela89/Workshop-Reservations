@@ -1,5 +1,6 @@
 package com.example.workshop_reservations.mapper;
 
+import com.example.workshop_reservations.dto.ParticipantResponse;
 import com.example.workshop_reservations.dto.ReservationRequest;
 import com.example.workshop_reservations.dto.ReservationResponse;
 import com.example.workshop_reservations.model.Reservation;
@@ -28,12 +29,32 @@ public class ReservationMapper {
     public ReservationResponse toResponse(Reservation r) {
         return ReservationResponse.builder()
                 .id(r.getId())
+                // Workshop
                 .workshopId(r.getWorkshop().getId())
-                .userId(r.getUser().getId())
                 .workshopTitle(r.getWorkshop().getTitle())
+
+                // User
+                .userId(r.getUser().getId())
+                .userName(r.getUser().getName())
+                .userEmail(r.getUser().getEmail())
+
+                // Reservation fields
                 .seats(r.getSeats())
                 .status(r.getStatus())
                 .createdAt(r.getCreatedAt())
+
+                // Participants
+                .participants(
+                        r.getParticipants().stream()
+                                .map(p -> ParticipantResponse.builder()
+                                        .id(p.getId())
+                                        .fullName(p.getFullName())
+                                        .email(p.getEmail())
+                                        .reservationId(r.getId())
+                                        .workshopId(r.getWorkshop().getId())
+                                        .build())
+                                .toList()
+                )
                 .build();
     }
 }

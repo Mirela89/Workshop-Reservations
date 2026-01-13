@@ -1,7 +1,10 @@
 package com.example.workshop_reservations.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +23,8 @@ public class ReservationRequest {
     @Min(1)
     @Max(50)
     private Integer seats;
+
+    @Valid
+    @NotNull
+    private List<ParticipantRequest> participants;
 }

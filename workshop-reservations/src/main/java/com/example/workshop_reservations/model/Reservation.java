@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="reservations")
@@ -40,4 +42,8 @@ public class Reservation {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "workshop_id", nullable = false)
     private Workshop workshop;
+
+    // Relatia One-to-Many cu Participant ( One reservation to Many participants )
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>();
 }
